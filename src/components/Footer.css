@@ -1,0 +1,22 @@
+.footer {
+  background: var(--color-footer-bg);
+  color: var(--color-on-dark);
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.footer-copy,
+.footer-contact {
+  margin: 0.25rem 0;
+}
+
+.footer-email {
+  color: var(--color-on-dark);
+  overflow-wrap: anywhere;
+}
+
+.footer-email:hover,
+.footer-email:focus {
+  color: var(--color-on-dark);
+  text-decoration: none;
+}

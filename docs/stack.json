@@ -1,0 +1,41 @@
+{
+  "name": "react",
+  "description": "React single-page app or landing page built with Vite, tested with Vitest and React Testing Library.",
+  "language": "JavaScript (JSX), React 18, Vite 5, ES modules",
+  "module_unit": "React component (one .jsx file plus an optional .css file with the same name)",
+  "source_pattern": "src/components/<Module>.jsx",
+  "test_pattern": "tests/<Module>.test.jsx",
+  "test_framework": "Vitest 2 + @testing-library/react + @testing-library/jest-dom (jsdom environment, globals enabled)",
+  "conventions": [
+    "Function components with a default export named exactly like the module, e.g. `export default function Hero(props)`.",
+    "Components are written in PascalCase; `App` is its own module and composes the others by import, e.g. `import Hero from './Hero.jsx'`.",
+    "Design must give every component its exact props (name, type, default) and the exact visible text, heading levels, link hrefs, button labels, ARIA roles/labels and data-testid values that tests rely on.",
+    "Styles live in `src/components/<Module>.css`, imported by the component; class names are prefixed with the component name in kebab-case to avoid clashes.",
+    "Tests import components from `../src/components/<Module>.jsx` and query by role/text (getByRole, getByText); no snapshot tests.",
+    "No extra runtime dependencies beyond react and react-dom unless the design lists them."
+  ],
+  "scaffold": [
+    "package.json: {\"name\": <repo name>, \"private\": true, \"type\": \"module\", \"scripts\": {\"dev\": \"vite\", \"build\": \"vite build\", \"preview\": \"vite preview\", \"test\": \"vitest run\"}, dependencies react ^18.3.1 and react-dom ^18.3.1, devDependencies vite ^5.4.0, @vitejs/plugin-react ^4.3.0, vitest ^2.1.0, jsdom ^25.0.0, @testing-library/react ^16.0.0, @testing-library/dom ^10.4.0, @testing-library/jest-dom ^6.5.0}",
+    "vite.config.js: plugin react(); test: { environment: 'jsdom', globals: true, setupFiles: './tests/setup.js' }",
+    "tests/setup.js: import '@testing-library/jest-dom/vitest'",
+    "index.html: standard Vite entry with <div id=\"root\"></div>, the page <title> from the design, and <script type=\"module\" src=\"/src/main.jsx\">",
+    "src/main.jsx: createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>), importing App from './components/App.jsx' and './index.css'",
+    "src/index.css: global reset and the design tokens (colors, fonts) from the design",
+    "Run `npm install` and verify `npx vite --version` works. Do not create any component files."
+  ],
+  "shared_files": ["package.json", "package-lock.json", "vite.config.js", "index.html", "src/main.jsx", "src/index.css", "tests/setup.js"],
+  "install": "npm install",
+  "build": "npm run build",
+  "test": "npm test",
+  "check": "",
+  "run": "npm run dev",
+  "gitignore": ["node_modules/", "dist/", "coverage/"],
+  "modules": [
+    {"name": "Navbar", "files": ["src/components/Navbar.jsx", "src/components/Navbar.css"], "test": "tests/Navbar.test.jsx", "depends_on": []},
+    {"name": "Hero", "files": ["src/components/Hero.jsx", "src/components/Hero.css"], "test": "tests/Hero.test.jsx", "depends_on": []},
+    {"name": "Agenda", "files": ["src/components/Agenda.jsx", "src/components/Agenda.css"], "test": "tests/Agenda.test.jsx", "depends_on": []},
+    {"name": "Pendaftaran", "files": ["src/components/Pendaftaran.jsx", "src/components/Pendaftaran.css"], "test": "tests/Pendaftaran.test.jsx", "depends_on": []},
+    {"name": "Footer", "files": ["src/components/Footer.jsx", "src/components/Footer.css"], "test": "tests/Footer.test.jsx", "depends_on": []},
+    {"name": "App", "files": ["src/components/App.jsx", "src/components/App.css"], "test": "tests/App.test.jsx", "depends_on": ["Navbar", "Hero", "Agenda", "Pendaftaran", "Footer"]}
+  ]
+}

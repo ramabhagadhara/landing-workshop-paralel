@@ -1,0 +1,22 @@
+.pendaftaran {
+  max-width: 40rem;
+  width: 100%;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  background: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: 0 2px 8px rgba(17, 24, 39, 0.08);
+  text-align: center;
+  color: var(--color-text);
+}
+
+.pendaftaran-heading {
+  margin: 0 0 0.75rem;
+  color: var(--color-primary);
+  font-size: 1.75rem;
+}
+
+.pendaftaran-text {
+  margin: 0;
+  font-size: 1.125rem;
+}
