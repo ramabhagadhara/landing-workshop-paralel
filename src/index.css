@@ -1,0 +1,15 @@
+:root {
+  --color-primary: #4F46E5;
+  --color-accent: #F59E0B;
+  --color-text: #111827;
+  --color-bg: #F9FAFB;
+  --color-footer-bg: #1F2937;
+  --color-on-dark: #F9FAFB;
+  --radius: 12px;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --content-max-width: 1080px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: var(--font-sans); color: var(--color-text); background: var(--color-bg); line-height: 1.6; }
+img { max-width: 100%; }

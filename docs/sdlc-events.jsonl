@@ -1,0 +1,40 @@
+{"kind": "send", "task": "prd", "agent": "notion", "phase": "prd", "channel": "mcp", "summary": "notion_read_page PRD Landing Page Workshop", "ts": "2026-10-15T21:18:15+07:00"}
+{"kind": "reply", "task": "prd", "status": "ok", "summary": "PRD with 5 tickets (LP-1..LP-5); LP-1 found", "artifacts": ["docs/prd.md"], "ts": "2026-10-15T21:18:26+07:00"}
+{"kind": "send", "task": "requirement", "agent": "sdlc-requirement", "phase": "requirement", "channel": "prompt", "summary": "PRD + react stack, scope only ticket LP-1 -> user stories + AC", "ts": "2026-10-15T21:18:26+07:00"}
+{"kind": "reply", "task": "requirement", "status": "ok", "summary": "AC-1..AC-26 for LP-1, stack react, 4 assumptions", "artifacts": ["docs/requirements.md"], "ts": "2026-10-15T21:19:21+07:00"}
+{"kind": "send", "task": "design", "agent": "sdlc-design", "phase": "design", "channel": "prompt", "summary": "requirements + react preset -> components, exact interfaces, stack.json", "ts": "2026-10-15T21:19:21+07:00"}
+{"kind": "reply", "task": "design", "status": "ok", "summary": "STACK react, MODULES Navbar, Hero, Agenda, Pendaftaran, Footer, App", "artifacts": ["docs/design.md", "docs/stack.json"], "ts": "2026-10-15T21:20:58+07:00"}
+{"kind": "send", "task": "scaffold", "agent": "sdlc-scaffold", "phase": "scaffold", "channel": "prompt", "summary": "create shared files (package.json, vite config, index.html, main.jsx) + npm install", "ts": "2026-10-15T21:20:58+07:00"}
+{"kind": "reply", "task": "scaffold", "status": "ok", "summary": "shared files + npm install ok, vite 5.4.21, vitest config loads", "artifacts": ["package.json", "package-lock.json", "vite.config.js", "index.html", "src/main.jsx", "src/index.css", "tests/setup.js", ".gitignore"], "ts": "2026-10-15T21:22:17+07:00"}
+{"kind": "send", "task": "code:Navbar", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement Navbar per design", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "code:Hero", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement Hero per design", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "code:Agenda", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement Agenda per design", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "code:Pendaftaran", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement Pendaftaran per design", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "code:Footer", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement Footer per design", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "code:App", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement App composing all sections", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:Navbar", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for Navbar from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:Hero", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for Hero from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:Agenda", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for Agenda from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:Pendaftaran", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for Pendaftaran from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:Footer", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for Footer from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "test:App", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for App (order, title) from interface only", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "send", "task": "docs", "agent": "sdlc-docs", "phase": "fanout", "summary": "write README from requirements, design, stack", "ts": "2026-10-15T21:22:55+07:00"}
+{"kind": "reply", "task": "code:Pendaftaran", "status": "ok", "summary": "section daftar with h2 + placeholder text", "artifacts": ["src/components/Pendaftaran.jsx", "src/components/Pendaftaran.css"], "ts": "2026-10-15T21:23:21+07:00"}
+{"kind": "reply", "task": "code:Footer", "status": "ok", "summary": "footer with copyright + mailto link", "artifacts": ["src/components/Footer.jsx", "src/components/Footer.css"], "duration_ms": 18416, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:Hero", "status": "ok", "summary": "5 tests AC-8..AC-12", "artifacts": ["tests/Hero.test.jsx"], "duration_ms": 18779, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:Pendaftaran", "status": "ok", "summary": "4 tests incl. no form controls", "artifacts": ["tests/Pendaftaran.test.jsx"], "duration_ms": 18950, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "code:Hero", "status": "ok", "summary": "section tentang, h1, subtitle, info, CTA link", "artifacts": ["src/components/Hero.jsx", "src/components/Hero.css"], "duration_ms": 19618, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "code:App", "status": "ok", "summary": "Navbar, main(Hero, Agenda, Pendaftaran), Footer", "artifacts": ["src/components/App.jsx", "src/components/App.css"], "duration_ms": 19891, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:Footer", "status": "ok", "summary": "4 tests contentinfo, text, mailto", "artifacts": ["tests/Footer.test.jsx"], "duration_ms": 20067, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:Agenda", "status": "ok", "summary": "6 tests, 4 sessions, en dash", "artifacts": ["tests/Agenda.test.jsx"], "duration_ms": 21545, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "code:Navbar", "status": "ok", "summary": "nav Navigasi utama, logo span, 3 links", "artifacts": ["src/components/Navbar.jsx", "src/components/Navbar.css"], "duration_ms": 21813, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "docs", "status": "ok", "summary": "Indonesian README for LP-1", "artifacts": ["README.md"], "duration_ms": 21972, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "code:Agenda", "status": "ok", "summary": "section agenda, h2, 4 agenda items", "artifacts": ["src/components/Agenda.jsx", "src/components/Agenda.css"], "duration_ms": 22446, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:Navbar", "status": "ok", "summary": "5 tests landmark, logo, 3 links", "artifacts": ["tests/Navbar.test.jsx"], "duration_ms": 22503, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "reply", "task": "test:App", "status": "ok", "summary": "5 tests title, landmarks, order, headings, anchors", "artifacts": ["tests/App.test.jsx"], "duration_ms": 26149, "ts": "2026-10-15T21:23:57+07:00"}
+{"kind": "send", "task": "review", "agent": "sdlc-reviewer", "phase": "review-1", "summary": "run build + tests, review 6 components against design", "ts": "2026-10-15T21:24:18+07:00"}
+{"kind": "reply", "task": "review", "status": "ok", "summary": "REVIEW approve, build ok, 29/29 tests passed", "artifacts": ["docs/review.md"], "ts": "2026-10-15T21:25:22+07:00"}
+{"kind": "send", "task": "ci", "agent": "shell", "phase": "ci", "channel": "bash", "summary": "npm install, npm run build, npm test", "ts": "2026-10-15T21:25:22+07:00"}
+{"kind": "reply", "task": "ci", "status": "ok", "summary": "build ok, 6 files / 29 tests passed", "ts": "2026-10-15T21:25:43+07:00"}
+{"kind": "send", "task": "pr", "agent": "github", "phase": "pr", "channel": "bash", "summary": "commit, push branch, gh pr create", "ts": "2026-10-15T21:25:43+07:00"}
+{"kind": "reply", "task": "pr", "status": "ok", "summary": "PR 1 opened", "artifacts": [], "ts": "2026-10-15T21:26:12+07:00"}
