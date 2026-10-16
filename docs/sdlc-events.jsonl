@@ -1,24 +1,28 @@
-{"kind": "send", "task": "prd", "agent": "notion", "phase": "prd", "channel": "mcp", "summary": "notion_read_page PRD Landing Page Workshop", "ts": "2026-10-15T21:44:46+07:00"}
-{"kind": "reply", "task": "prd", "status": "ok", "summary": "PRD unchanged, 5 tickets; LP-2 found; incremental run (LP-1 merged)", "artifacts": ["docs/prd.md"], "ts": "2026-10-15T21:45:03+07:00"}
-{"kind": "send", "task": "requirement", "agent": "sdlc-requirement", "phase": "requirement", "channel": "prompt", "summary": "PRD + react stack, scope only LP-2, incremental -> add LP-2 section", "ts": "2026-10-15T21:45:03+07:00"}
-{"kind": "reply", "task": "requirement", "status": "ok", "summary": "LP-2 section added; LP-1 AC-19, AC-20 superseded; pure validation fn", "artifacts": ["docs/requirements.md"], "duration_ms": 71744, "ts": "2026-10-15T21:46:38+07:00"}
-{"kind": "send", "task": "design", "agent": "sdlc-design", "phase": "design", "channel": "prompt", "summary": "incremental design for LP-2, keep LP-1 interfaces, list new/changed modules", "ts": "2026-10-15T21:46:38+07:00"}
-{"kind": "reply", "task": "design", "status": "ok", "summary": "MODULES validatePendaftaran (new), Pendaftaran (changed); 5 unchanged", "artifacts": ["docs/design.md", "docs/stack.json"], "ts": "2026-10-15T21:49:26+07:00"}
-{"kind": "send", "task": "scaffold", "agent": "sdlc-scaffold", "phase": "scaffold", "channel": "prompt", "summary": "incremental: verify shared files, add only what is missing, npm install", "ts": "2026-10-15T21:49:26+07:00"}
-{"kind": "reply", "task": "scaffold", "status": "ok", "summary": "no changes needed; npm install ok; 29 LP-1 tests pass", "artifacts": [], "duration_ms": 48058, "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "send", "task": "code:validatePendaftaran", "agent": "sdlc-coder", "phase": "fanout", "summary": "implement pure validation function (new)", "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "send", "task": "code:Pendaftaran", "agent": "sdlc-coder", "phase": "fanout", "summary": "replace placeholder with registration form (changed)", "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "send", "task": "test:validatePendaftaran", "agent": "sdlc-tester", "phase": "fanout", "summary": "tests for validation function from interface", "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "send", "task": "test:Pendaftaran", "agent": "sdlc-tester", "phase": "fanout", "summary": "rewrite Pendaftaran tests for the form", "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "send", "task": "docs", "agent": "sdlc-docs", "phase": "fanout", "summary": "update README with LP-2 form", "ts": "2026-10-15T21:50:49+07:00"}
-{"kind": "reply", "task": "code:validatePendaftaran", "status": "ok", "summary": "ERROR_MESSAGES + pure validatePendaftaran", "artifacts": ["src/components/validatePendaftaran.js"], "duration_ms": 12815, "ts": "2026-10-15T21:51:26+07:00"}
-{"kind": "reply", "task": "test:validatePendaftaran", "status": "ok", "summary": "6 tests: messages, valid, per-field invalid, purity", "artifacts": ["tests/validatePendaftaran.test.jsx"], "duration_ms": 24934, "ts": "2026-10-15T21:51:26+07:00"}
-{"kind": "reply", "task": "docs", "status": "ok", "summary": "README updated for LP-1 + LP-2", "artifacts": ["README.md"], "duration_ms": 28153, "ts": "2026-10-15T21:51:47+07:00"}
-{"kind": "reply", "task": "code:Pendaftaran", "status": "ok", "summary": "registration form with validation + success status", "artifacts": ["src/components/Pendaftaran.jsx", "src/components/Pendaftaran.css"], "duration_ms": 34013, "ts": "2026-10-15T21:51:47+07:00"}
-{"kind": "reply", "task": "test:Pendaftaran", "status": "ok", "summary": "6 fireEvent tests: structure, errors, success", "artifacts": ["tests/Pendaftaran.test.jsx"], "duration_ms": 38614, "ts": "2026-10-15T21:52:01+07:00"}
-{"kind": "send", "task": "review", "agent": "sdlc-reviewer", "phase": "review-1", "summary": "build + full test suite (LP-1 + LP-2), review changed modules", "ts": "2026-10-15T21:52:01+07:00"}
-{"kind": "reply", "task": "review", "status": "ok", "summary": "REVIEW approve, build ok, 37/37 tests, no LP-1 regression", "artifacts": ["docs/review.md"], "ts": "2026-10-15T21:53:18+07:00"}
-{"kind": "send", "task": "ci", "agent": "shell", "phase": "ci", "channel": "bash", "summary": "npm install, npm run build, npm test", "ts": "2026-10-15T21:53:18+07:00"}
-{"kind": "reply", "task": "ci", "status": "ok", "summary": "build ok, 7 files / 37 tests passed", "ts": "2026-10-15T21:53:37+07:00"}
-{"kind": "send", "task": "pr", "agent": "github", "phase": "pr", "channel": "bash", "summary": "commit, push branch, gh pr create", "ts": "2026-10-15T21:53:37+07:00"}
-{"kind": "reply", "task": "pr", "status": "ok", "summary": "PR 2 opened", "ts": "2026-10-15T21:54:05+07:00"}
+{"kind": "send", "task": "prd", "agent": "notion", "phase": "prd", "summary": "Read PRD page from Notion", "ts": "2026-10-16T14:20:16+07:00"}
+{"kind": "reply", "task": "prd", "status": "ok", "summary": "PRD read; ticket LP-3 FAQ accordion found", "artifacts": ["docs/prd.md"], "ts": "2026-10-16T14:20:44+07:00"}
+{"kind": "send", "task": "requirement", "agent": "sdlc-requirement", "phase": "requirement", "summary": "Turn PRD ticket LP-3 into user stories and acceptance criteria (incremental)", "ts": "2026-10-16T14:20:44+07:00"}
+{"kind": "reply", "task": "requirement", "status": "ok", "summary": "LP-3 stories + AC added; FAQ between Agenda and Pendaftaran, navbar 4 links", "artifacts": ["docs/requirements.md"], "ts": "2026-10-16T14:22:16+07:00"}
+{"kind": "send", "task": "design", "agent": "sdlc-design", "phase": "design", "summary": "Incremental design for LP-3 using react stack; list new/changed modules", "ts": "2026-10-16T14:22:16+07:00"}
+{"kind": "reply", "task": "design", "status": "ok", "summary": "STACK react; MODULES Faq (new), Navbar, App (changed)", "artifacts": ["docs/design.md", "docs/stack.json"], "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "code:Faq", "agent": "sdlc-coder", "phase": "fanout", "summary": "Implement new Faq accordion module", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "code:Navbar", "agent": "sdlc-coder", "phase": "fanout", "summary": "Add FAQ link to Navbar", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "code:App", "agent": "sdlc-coder", "phase": "fanout", "summary": "Render Faq between Agenda and Pendaftaran", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "test:Faq", "agent": "sdlc-tester", "phase": "fanout", "summary": "Write tests/Faq.test.jsx", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "test:Navbar", "agent": "sdlc-tester", "phase": "fanout", "summary": "Update tests/Navbar.test.jsx for 4 links", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "test:App", "agent": "sdlc-tester", "phase": "fanout", "summary": "Update tests/App.test.jsx for new order/headings", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "docs", "agent": "sdlc-docs", "phase": "fanout", "summary": "Update README for LP-3", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "send", "task": "scaffold", "agent": "sdlc-scaffold", "phase": "fanout", "summary": "Verify/refresh shared skeleton and npm install", "ts": "2026-10-16T14:24:40+07:00"}
+{"kind": "reply", "task": "code:Navbar", "status": "ok", "summary": "FAQ link added between Agenda and Daftar", "artifacts": ["src/components/Navbar.jsx"], "ts": "2026-10-16T14:25:00+07:00"}
+{"kind": "reply", "task": "code:App", "status": "ok", "summary": "App imports Faq and renders it between Agenda and Pendaftaran", "artifacts": ["src/components/App.jsx"], "duration_ms": 11584, "ts": "2026-10-16T14:25:09+07:00"}
+{"kind": "reply", "task": "test:Navbar", "status": "ok", "summary": "Navbar tests updated for 4 links incl. FAQ -> #faq", "artifacts": ["tests/Navbar.test.jsx"], "duration_ms": 15250, "ts": "2026-10-16T14:25:09+07:00"}
+{"kind": "reply", "task": "code:Faq", "status": "ok", "summary": "Faq.jsx (FAQ_ITEMS, single-open accordion) and Faq.css written", "artifacts": ["src/components/Faq.jsx", "src/components/Faq.css"], "duration_ms": 19902, "ts": "2026-10-16T14:25:19+07:00"}
+{"kind": "reply", "task": "test:App", "status": "ok", "summary": "App tests updated: order, headings, links, FAQ collapsed", "artifacts": ["tests/App.test.jsx"], "duration_ms": 24228, "ts": "2026-10-16T14:25:19+07:00"}
+{"kind": "reply", "task": "test:Faq", "status": "ok", "summary": "6 Faq tests: structure, content, single-open behaviour, items prop", "artifacts": ["tests/Faq.test.jsx"], "duration_ms": 27536, "ts": "2026-10-16T14:25:26+07:00"}
+{"kind": "reply", "task": "docs", "status": "ok", "summary": "README extended with Faq section, FAQ nav link, page order", "artifacts": ["README.md"], "duration_ms": 28416, "ts": "2026-10-16T14:25:26+07:00"}
+{"kind": "reply", "task": "scaffold", "status": "ok", "summary": "Shared files already match; npm install ok; vite 5.4.21; npm test 44/44", "artifacts": [], "ts": "2026-10-16T14:25:58+07:00"}
+{"kind": "send", "task": "review", "agent": "sdlc-reviewer", "phase": "review-1", "summary": "Build, test and review LP-3 changes (Faq, Navbar, App)", "ts": "2026-10-16T14:25:58+07:00"}
+{"kind": "reply", "task": "review", "status": "ok", "summary": "approve round 1; build ok; 44/44 tests pass", "artifacts": ["docs/review.md"], "ts": "2026-10-16T14:26:59+07:00"}
+{"kind": "send", "task": "ci", "agent": "shell", "phase": "ci", "summary": "npm install, npm run build, npm test", "ts": "2026-10-16T14:26:59+07:00"}
+{"kind": "reply", "task": "ci", "status": "ok", "summary": "install ok, build ok, 44 passed (8 files)", "duration_ms": 11701, "ts": "2026-10-16T14:27:19+07:00"}
+{"kind": "send", "task": "pr", "agent": "github", "phase": "pr", "summary": "Commit, push sdlc/sdlc-20261016-1420-lp-3 and open PR", "ts": "2026-10-16T14:27:19+07:00"}
+{"kind": "reply", "task": "pr", "status": "ok", "summary": "PR #3 opened (ready for review)", "artifacts": ["https://github.com/ramabhagadhara/landing-workshop-paralel/pull/3"], "ts": "2026-10-16T14:27:42+07:00"}

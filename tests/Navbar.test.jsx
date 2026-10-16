@@ -17,30 +17,36 @@ describe('Navbar', () => {
     expect(screen.queryByRole('link', { name: 'ParaLab Workshop' })).toBeNull();
   });
 
-  it('contains exactly three links in order with the exact hrefs', () => {
+  it('contains exactly four links in order with the exact hrefs (LP3-AC-2)', () => {
     render(<Navbar />);
     const nav = screen.getByRole('navigation', { name: 'Navigasi utama' });
     const links = within(nav).getAllByRole('link');
-    expect(links).toHaveLength(3);
-    expect(links.map((l) => l.textContent)).toEqual(['Tentang', 'Agenda', 'Daftar']);
+    expect(links).toHaveLength(4);
+    expect(links.map((l) => l.textContent)).toEqual(['Tentang', 'Agenda', 'FAQ', 'Daftar']);
     expect(links.map((l) => l.getAttribute('href'))).toEqual([
       '#tentang',
       '#agenda',
+      '#faq',
       '#daftar',
     ]);
   });
 
-  it('finds each link by its accessible name', () => {
+  it('finds each link, including the new FAQ link, by its accessible name', () => {
     render(<Navbar />);
     expect(screen.getByRole('link', { name: 'Tentang' })).toHaveAttribute('href', '#tentang');
     expect(screen.getByRole('link', { name: 'Agenda' })).toHaveAttribute('href', '#agenda');
+    expect(screen.getByRole('link', { name: 'FAQ' })).toHaveAttribute('href', '#faq');
     expect(screen.getByRole('link', { name: 'Daftar' })).toHaveAttribute('href', '#daftar');
   });
 
-  it('renders the links as a list and contains no headings', () => {
+  it('renders the links as a list of four items and contains no headings', () => {
     render(<Navbar />);
     const list = screen.getByRole('list');
-    expect(within(list).getAllByRole('listitem')).toHaveLength(3);
+    const items = within(list).getAllByRole('listitem');
+    expect(items).toHaveLength(4);
+    items.forEach((item) => {
+      expect(within(item).getAllByRole('link')).toHaveLength(1);
+    });
     expect(screen.queryAllByRole('heading')).toHaveLength(0);
   });
 });

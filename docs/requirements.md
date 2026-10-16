@@ -21,13 +21,13 @@ All visible text must match exactly, including the en dash `–` in times and th
 
 ### Page / document
 - AC-1: The page `<title>` (in the HTML entry file) is exactly `Workshop Komputasi Paralel 2026`. A test can check this by reading the HTML entry file as text, without a browser.
-- AC-2: Rendering the root App component produces, in this DOM order: Navbar, Hero (`#tentang`), Agenda (`#agenda`), Pendaftaran (`#daftar`), Footer.
-- AC-3: The rendered App contains exactly one heading of level 1, and the level-2 headings appear in the order "Agenda", "Pendaftaran". No heading levels are skipped (no h3 without a preceding h2, etc.).
+- AC-2: Rendering the root App component produces, in this DOM order: Navbar, Hero (`#tentang`), Agenda (`#agenda`), Pendaftaran (`#daftar`), Footer. **(Amended by LP-3, see LP3-AC-1.)**
+- AC-3: The rendered App contains exactly one heading of level 1, and the level-2 headings appear in the order "Agenda", "Pendaftaran". No heading levels are skipped (no h3 without a preceding h2, etc.). **(Amended by LP-3, see LP3-AC-1.)**
 
 ### Navbar
 - AC-4: The navbar is rendered as a navigation landmark (`role="navigation"`, i.e. a `<nav>` element) with the accessible name `Navigasi utama` (`getByRole('navigation', { name: 'Navigasi utama' })` finds it).
 - AC-5: The navbar displays the logo text `ParaLab Workshop`.
-- AC-6: The navbar contains exactly three links, in this order:
+- AC-6: The navbar contains exactly three links, in this order: **(Amended by LP-3, see LP3-AC-2.)**
   - `Tentang` with `href="#tentang"`
   - `Agenda` with `href="#agenda"`
   - `Daftar` with `href="#daftar"`
@@ -144,7 +144,7 @@ All visible text must match exactly, including the en dash `–` in `3–80`.
 - LP2-AC-19: If no `onSubmit` prop is given, a valid submit still shows the thank-you message without throwing.
 
 ### Page-level and quality
-- LP2-AC-20: The rendered App still contains exactly one h1, the level-2 headings in order `Agenda`, `Pendaftaran`, and no skipped heading levels (the form and thank-you message add no headings above h2 level; any added heading must be h3 or lower).
+- LP2-AC-20: The rendered App still contains exactly one h1, the level-2 headings in order `Agenda`, `Pendaftaran`, and no skipped heading levels (the form and thank-you message add no headings above h2 level; any added heading must be h3 or lower). **(Heading order amended by LP-3, see LP3-AC-1.)**
 - LP2-AC-21: Form styling uses the LP-1 design tokens (primary `#4F46E5` for the button, 12px rounded corners, system fonts); error text is visually distinct (e.g. red) and the form fits 360px wide without horizontal scroll (manual check).
 - LP2-AC-22: Unit tests cover the pure validation function directly (all examples above) and the form component with React Testing Library (initial state, errors, error clearing, success message, `onSubmit` payload, no `onSubmit`). Tests use `fireEvent` or `@testing-library/user-event` only if already installed; no new dependencies are required. `npm test` and `npm run build` pass.
 
@@ -167,3 +167,80 @@ All visible text must match exactly, including the en dash `–` in `3–80`.
 - Sending registration data to any server, email confirmation, storing data (including localStorage).
 - Live (as-you-type or on-blur) validation, checking that the email domain exists, checking NIM against a real student database.
 - A "register again" / reset flow after successful submission.
+
+# LP-3 FAQ accordion
+
+LP-3 adds a "Pertanyaan Umum" (FAQ) section with four questions in an accordion: each question is a button that reveals its answer, at most one answer is open at a time, and clicking an open question closes it. The navbar gains a fourth link "FAQ" to `#faq`. All content is static and in Indonesian.
+
+## Stack
+
+Unchanged from LP-1/LP-2: React 18 + Vite 5, JavaScript (JSX), Vitest 2 + React Testing Library + jest-dom in jsdom (stack profile `react`). No new runtime dependencies; the accordion is hand-written with React state (no UI library, no `<details>` element).
+
+## User stories
+
+1. As a prospective participant, I want to read answers to common questions (cost, laptop, certificate, absence) on the page so that I can decide to register without contacting the organiser.
+2. As a prospective participant, I want the questions collapsed by default and to open only the one I click so that the section stays short and easy to scan.
+3. As a prospective participant, I want a "FAQ" link in the navbar so that I can jump straight to the questions.
+4. As a screen-reader user, I want each question to be a button that announces whether it is expanded so that I know when an answer is shown.
+
+## Acceptance criteria
+
+All visible text must match exactly, including the trailing full stops in the answers.
+
+### Changes to earlier criteria
+- LP3-AC-1: LP-1 **AC-2** is amended: the App renders, in this DOM order, Navbar, Hero (`#tentang`), Agenda (`#agenda`), FAQ (`#faq`), Pendaftaran (`#daftar`), Footer. LP-1 **AC-3** and LP-2 **LP2-AC-20** are amended: the page still has exactly one h1, the level-2 headings now appear in the order `Agenda`, `Pertanyaan Umum`, `Pendaftaran`, and no heading level is skipped. Tests asserting the old order must be updated.
+- LP3-AC-2: LP-1 **AC-6** is amended: the navbar (`Navigasi utama`) contains exactly four links, in this order:
+  - `Tentang` with `href="#tentang"`
+  - `Agenda` with `href="#agenda"`
+  - `FAQ` with `href="#faq"`
+  - `Daftar` with `href="#daftar"`
+  All other LP-1 navbar criteria (AC-4, AC-5, AC-7) still hold. All LP-2 criteria for the registration form still hold unchanged.
+
+### FAQ section rendering (initial state)
+- LP3-AC-3: The FAQ is a section element with `id="faq"` containing a level-2 heading with text `Pertanyaan Umum`.
+- LP3-AC-4: The section contains exactly four question buttons (role `button`, `type="button"`), in this order, whose accessible names are exactly:
+  1. `Apakah workshop ini gratis?`
+  2. `Perlu membawa laptop?`
+  3. `Apakah ada sertifikat?`
+  4. `Bagaimana jika berhalangan hadir?`
+- LP3-AC-5: Each question button is wrapped in a level-3 heading whose text equals the question (so `getByRole('heading', { level: 3, name: <question> })` finds it). No other headings are added inside the section.
+- LP3-AC-6: The answers paired with the questions are exactly:
+  1. `Ya, gratis untuk mahasiswa dan dosen.`
+  2. `Ya, untuk sesi hands-on.`
+  3. `Ya, sertifikat elektronik dikirim lewat email.`
+  4. `Rekaman sesi akan dibagikan ke peserta terdaftar.`
+- LP3-AC-7: Initially every question button has `aria-expanded="false"` and no answer is visible. Each answer panel is always present in the DOM but carries the `hidden` attribute while closed (so `expect(getByText(answer)).not.toBeVisible()` passes in jsdom).
+- LP3-AC-8: Each question button has `aria-controls` equal to the `id` of its own answer panel; panel ids are unique on the page.
+
+### Accordion interaction
+- LP3-AC-9: Clicking a closed question sets its button to `aria-expanded="true"` and makes its answer visible (`toBeVisible()`, no `hidden` attribute).
+- LP3-AC-10: Only one answer is open at a time: clicking a different question while one is open opens the clicked one and closes the previously open one (its button returns to `aria-expanded="false"` and its answer gets `hidden` again). Example: click `Apakah workshop ini gratis?`, then `Apakah ada sertifikat?` → only `Ya, sertifikat elektronik dikirim lewat email.` is visible and only the third button has `aria-expanded="true"`.
+- LP3-AC-11: Clicking the currently open question again closes it, leaving all four answers hidden and all buttons `aria-expanded="false"`.
+- LP3-AC-12: At any moment, the number of buttons with `aria-expanded="true"` is 0 or 1, and the visible answer (if any) belongs to that button.
+- LP3-AC-13: Clicking a question does not navigate, submit a form or change the URL hash (buttons are `type="button"`).
+
+### Data and quality
+- LP3-AC-14: The FAQ component renders the four PRD question/answer pairs by default. It may accept an optional `items` prop (array of `{ question, answer }`) that replaces the defaults; when given, it renders exactly those items in order with the same accordion behaviour (a test can pass two custom items and check both render and toggle).
+- LP3-AC-15: Styling uses the existing design tokens (primary `#4F46E5`, text `#111827`, 12px rounded corners, system fonts); question buttons span the content width, show an open/closed indicator that is decorative only (`aria-hidden="true"`, not part of the button's accessible name), and the section fits 360px wide without horizontal scroll (manual check).
+- LP3-AC-16: Unit tests with React Testing Library cover the FAQ component (heading, four questions in order, initial collapsed state, open, switch between questions, close by second click, `aria-controls` linkage, custom `items`), the updated navbar (four links in order) and the App page order / heading order from LP3-AC-1. Tests use `fireEvent` or `@testing-library/user-event` only if already installed; no new dependencies. `npm test` and `npm run build` pass.
+
+## Assumptions
+
+- **Page placement:** the FAQ section is placed between Agenda and Pendaftaran (Navbar, Hero, Agenda, FAQ, Pendaftaran, Footer), following the PRD summary order "memperkenalkan acara, menampilkan agenda, menjawab pertanyaan umum, dan menerima pendaftaran", so questions are answered before the visitor reaches the form.
+- **Navbar placement:** the "FAQ" link is inserted between "Agenda" and "Daftar" so the navbar order matches the page order.
+- All questions start collapsed; none is open by default.
+- Closed answers stay in the DOM with the `hidden` attribute (rather than being unmounted) so `aria-controls` always points to an existing element.
+- Each question button sits inside an `h3`, following the WAI-ARIA accordion pattern; this keeps the heading hierarchy valid under the h2 `Pertanyaan Umum`.
+- Keyboard support comes from native `<button>` elements (Enter/Space toggle, Tab order); no arrow-key navigation between questions.
+- No open/close animation is required; if added, it must not affect the `hidden` state tests rely on.
+- The FAQ is its own component; the Navbar change is a small edit to the existing Navbar component.
+
+## Out of scope
+
+- LP-1 and LP-2 work beyond the amended page-order, heading-order and navbar-link criteria above (already built).
+- LP-4 Hitung mundur acara (countdown in the hero).
+- LP-5 Menu mobile (hamburger menu below 768px).
+- Opening multiple answers at once, "expand all / collapse all" controls, search or filtering of questions.
+- Deep-linking to a specific question (e.g. `#faq-2` opening that answer) or remembering the open question across reloads.
+- Arrow-key / Home / End keyboard navigation between accordion headers.
+- Loading FAQ content from a CMS or server.
