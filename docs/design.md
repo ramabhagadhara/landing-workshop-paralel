@@ -1,16 +1,17 @@
-# Design - Landing Page Workshop Komputasi Paralel (tickets LP-1, LP-2)
+# Design - Landing Page Workshop Komputasi Paralel (tickets LP-1, LP-2, LP-3)
 
 ## Architecture overview
 
-A static single-page landing page. `src/main.jsx` mounts `App`, which renders five
+A static single-page landing page. `src/main.jsx` mounts `App`, which renders six
 section components in a fixed order:
 
 ```
 App
-├── Navbar        <nav aria-label="Navigasi utama">
+├── Navbar        <nav aria-label="Navigasi utama">          -- LP-3: 4th link "FAQ"
 └── <main>
 │   ├── Hero        <section id="tentang">      (h1)
 │   ├── Agenda      <section id="agenda">       (h2 "Agenda")
+│   ├── Faq         <section id="faq">          (h2 "Pertanyaan Umum", h3 per question)  -- LP-3 (new)
 │   └── Pendaftaran <section id="daftar">       (h2 "Pendaftaran")  -- LP-2: registration form / thank-you
 │         └── uses validatePendaftaran()  (pure function, src/components/validatePendaftaran.js)
 └── Footer        <footer>
@@ -20,50 +21,52 @@ All content is hard-coded Indonesian text inside the components (no data fetchin
 Navigation uses plain anchor links to section ids. Each component imports its own CSS
 file; global tokens live in `src/index.css`.
 
-LP-2 changes only the registration section: `Pendaftaran` becomes a stateful form
-component (optional `onSubmit` prop), and a new pure module `validatePendaftaran`
-holds the validation rules. Nothing is sent anywhere. `App` is unchanged (it renders
-`<Pendaftaran />` with no props, as before).
+LP-3 adds a new stateful `Faq` accordion component (optional `items` prop), adds the
+`FAQ` link to `Navbar`, and inserts `<Faq />` between `<Agenda />` and `<Pendaftaran />`
+in `App`. No new dependencies, no new design tokens, no shared-file changes.
 
 **Stack:** `react` - React 18 + Vite 5 (JSX, ES modules), Vitest 2 + React Testing Library + jest-dom in jsdom.
 
-## Module status for LP-2
+## Module status for LP-3
 
 | Module | Status | Coded/tested in this run |
 |---|---|---|
-| Navbar | (unchanged) | no |
+| Navbar | (changed) | yes - add `FAQ` link; `tests/Navbar.test.jsx` updated (3 -> 4 links) |
 | Hero | (unchanged) | no |
 | Agenda | (unchanged) | no |
-| validatePendaftaran | (new) | yes |
-| Pendaftaran | (changed) | yes - `tests/Pendaftaran.test.jsx` is fully rewritten |
+| Faq | (new) | yes - `src/components/Faq.jsx`, `src/components/Faq.css`, `tests/Faq.test.jsx` |
+| validatePendaftaran | (unchanged) | no |
+| Pendaftaran | (unchanged) | no |
 | Footer | (unchanged) | no |
-| App | (unchanged) | no - `tests/App.test.jsx` keeps passing unchanged (see App section) |
+| App | (changed) | yes - render `<Faq />`; `tests/App.test.jsx` updated (page order, heading order, nav link count, h3 rule) |
 
-No shared file changes in LP-2 (no new dependencies, no new design tokens;
-`@testing-library/user-event` is **not** installed, so tests use `fireEvent`).
+No shared file changes in LP-3. `@testing-library/user-event` is **not** installed, so
+tests use `fireEvent`.
 
 ## Global rules for all modules
 
 - Every text string below must be reproduced **exactly**, character for character,
   including the en dash `–` (U+2013) in agenda times and in `3–80`, the middle dot `·`
-  (U+00B7) in the hero info and footer, and the copyright sign `©` (U+00A9).
+  (U+00B7) in the hero info and footer, the copyright sign `©` (U+00A9), and the
+  question marks / trailing full stops in the FAQ.
 - Each quoted visible string must be the **entire text content of a single element**
   with no nested elements inside it (so `getByText('<exact string>')` matches it).
   Do not split strings across elements and do not add extra whitespace-visible
   characters.
-- Components take **no props**, except `Pendaftaran`, which (since LP-2) takes one
-  optional prop `onSubmit`.
-- No component other than `App` renders `<main>`. No component renders an `<h3>` or
-  deeper heading. Only `Hero` renders an `<h1>`.
+- Components take **no props**, except `Pendaftaran` (optional `onSubmit`, since LP-2)
+  and `Faq` (optional `items`, since LP-3).
+- No component other than `App` renders `<main>`. Only `Hero` renders an `<h1>`.
+  Only `Faq` renders `<h3>` elements (one per question, since LP-3). No component
+  renders `<h4>`-`<h6>`.
 - CSS class names are prefixed with the component's kebab-case name (`navbar-`, `hero-`,
-  `agenda-`, `pendaftaran-`, `footer-`, `app-`). Use the CSS custom properties from
+  `agenda-`, `faq-`, `pendaftaran-`, `footer-`, `app-`). Use the CSS custom properties from
   `src/index.css` (below) instead of hard-coded colours (exceptions: `#FFFFFF` card/input
-  backgrounds and the error red `#B91C1C`, defined locally in `Pendaftaran.css`).
+  backgrounds and the error red `#B91C1C`, defined locally in component CSS).
 - Tests: `import X from '../src/components/X.jsx'`, `render(<X />)`, query with
   `screen.getByRole` / `getByText` / `within`. No snapshots. No `data-testid` is needed
   except the ones explicitly listed (Agenda items).
 
-## Scaffold (shared files, created before coding) - unchanged in LP-2
+## Scaffold (shared files, created before coding) - unchanged in LP-3
 
 | File | Key content |
 |---|---|
@@ -98,15 +101,17 @@ No external fonts, no `@import` of web fonts. Layout must not overflow horizonta
 360px to 1440px (use `max-width`, `flex-wrap`, percentage/`rem` widths, no fixed widths
 above 360px).
 
-## Navbar (unchanged)
+## Navbar (changed)
 
-Files: `src/components/Navbar.jsx`, `src/components/Navbar.css`. Test: `tests/Navbar.test.jsx`.
+Files: `src/components/Navbar.jsx`, `src/components/Navbar.css`. Test: `tests/Navbar.test.jsx`
+(**updated in this run**).
 
 ```jsx
 export default function Navbar()   // no props
 ```
 
-Exact markup (class names may be extended, structure and text may not):
+Exact markup (class names may be extended, structure and text may not). The only change
+from LP-1 is the new `FAQ` list item between `Agenda` and `Daftar`:
 
 ```jsx
 <nav className="navbar" aria-label="Navigasi utama">
@@ -114,6 +119,7 @@ Exact markup (class names may be extended, structure and text may not):
   <ul className="navbar-links">
     <li><a className="navbar-link" href="#tentang">Tentang</a></li>
     <li><a className="navbar-link" href="#agenda">Agenda</a></li>
+    <li><a className="navbar-link" href="#faq">FAQ</a></li>
     <li><a className="navbar-link" href="#daftar">Daftar</a></li>
   </ul>
 </nav>
@@ -121,12 +127,21 @@ Exact markup (class names may be extended, structure and text may not):
 
 - Root element: `<nav>`; `getByRole('navigation', { name: 'Navigasi utama' })` finds it.
 - Logo text `ParaLab Workshop` is a `<span>`, **not** a link.
-- Exactly three links (`getAllByRole('link')` has length 3) in order:
-  `Tentang` -> `#tentang`, `Agenda` -> `#agenda`, `Daftar` -> `#daftar`.
-  (`href` attribute values are exactly those strings.)
+- Exactly four links (`getAllByRole('link')` has length 4), each in its own `<li>`
+  (list has exactly 4 `listitem`s), in order:
+  `Tentang` -> `#tentang`, `Agenda` -> `#agenda`, `FAQ` -> `#faq`, `Daftar` -> `#daftar`.
+  (`href` attribute values are exactly those strings; link text is exactly `FAQ`, uppercase.)
 - No headings inside the navbar.
-- Style: horizontal flex bar, logo left, links right, `flex-wrap: wrap`; logo in
-  `--color-primary`, bold. Not sticky.
+- Style: unchanged (horizontal flex bar, logo left, links right, `flex-wrap: wrap` so four
+  links still fit at 360px; logo in `--color-primary`, bold; not sticky). Adjust the link
+  gap in `Navbar.css` only if needed for 360px.
+
+### What the updated `tests/Navbar.test.jsx` must check
+
+Keep the existing landmark and logo tests. Replace the "three links" tests with:
+links within the nav have length 4, texts `['Tentang', 'Agenda', 'FAQ', 'Daftar']`,
+hrefs `['#tentang', '#agenda', '#faq', '#daftar']`; `getByRole('link', { name: 'FAQ' })`
+has `href="#faq"` (plus the other three by name); the list has 4 `listitem`s; no headings.
 
 ## Hero (unchanged)
 
@@ -147,12 +162,8 @@ export default function Hero()   // no props
 
 - `<section id="tentang">` (no `aria-label`; tests use `container.querySelector('section#tentang')`).
 - Exactly one heading: `getByRole('heading', { level: 1, name: 'Workshop Komputasi Paralel 2026' })`.
-- Subtitle text exactly: `Belajar membangun sistem multi-agent yang berjalan paralel, dari teori sampai demo langsung.`
-- Info text exactly: `Sabtu, 14 November 2026 · Aula Fakultas Ilmu Komputer`
 - Exactly one link: `getByRole('link', { name: 'Daftar Sekarang' })` with `href="#daftar"`.
   It is an `<a>`, not a `<button>`; there are no `button` roles in Hero.
-- Style: CTA styled as a button: background `--color-accent`, text `--color-text`,
-  `border-radius: var(--radius)`, padding, `display: inline-block`, no underline.
 
 ## Agenda (unchanged)
 
@@ -162,281 +173,173 @@ Files: `src/components/Agenda.jsx`, `src/components/Agenda.css`. Test: `tests/Ag
 export default function Agenda()   // no props
 ```
 
-```js
-const AGENDA_ITEMS = [
-  { time: '08.30 – 09.00', title: 'Registrasi dan pembukaan' },
-  { time: '09.00 – 10.30', title: 'Dasar komputasi paralel dan terdistribusi' },
-  { time: '10.45 – 12.00', title: 'Multi-agent AI untuk otomasi SDLC' },
-  { time: '13.00 – 15.00', title: 'Hands-on: membangun pipeline agent paralel' },
-];
-```
+`<section id="agenda">`; one `h2` `Agenda`; one list with exactly 4 `listitem`s
+(`data-testid="agenda-item"`, separate time/title `<span>`s):
+`08.30 – 09.00` / `Registrasi dan pembukaan`, `09.00 – 10.30` / `Dasar komputasi paralel dan terdistribusi`,
+`10.45 – 12.00` / `Multi-agent AI untuk otomasi SDLC`, `13.00 – 15.00` / `Hands-on: membangun pipeline agent paralel`.
+No links in Agenda.
 
-```jsx
-<section id="agenda" className="agenda">
-  <h2 className="agenda-heading">Agenda</h2>
-  <ul className="agenda-list">
-    {AGENDA_ITEMS.map((item) => (
-      <li key={item.time} className="agenda-item" data-testid="agenda-item">
-        <span className="agenda-time">{item.time}</span>
-        <span className="agenda-title">{item.title}</span>
-      </li>
-    ))}
-  </ul>
-</section>
-```
+## Faq (new)
 
-- `<section id="agenda">`; one `h2` `Agenda`; one list with exactly 4 `listitem`s in the
-  order above, each with `data-testid="agenda-item"` and separate time/title `<span>`s.
-- No links in Agenda.
-
-## validatePendaftaran (new)
-
-File: `src/components/validatePendaftaran.js` (plain `.js`, no JSX, **no React import,
-no DOM access**). Test: `tests/validatePendaftaran.test.jsx`.
-(Deliberate deviation from `source_pattern`: this is a pure function, not a component.)
-
-### Exports
-
-```js
-export const ERROR_MESSAGES = {
-  nama: 'Nama wajib diisi (3–80 karakter).',
-  email: 'Format email tidak valid.',
-  nim: 'NIM harus 10 digit angka.',
-};
-
-export default function validatePendaftaran(data = {})   // also exported by name:
-export { validatePendaftaran };                           // i.e. `export function` + default, both refer to the same function
-```
-
-Test import: `import validatePendaftaran, { ERROR_MESSAGES } from '../src/components/validatePendaftaran.js';`
-
-### Contract
-
-- Parameter `data`: object `{ nama, email, nim, sesi }`, all strings. Any field that is
-  `undefined` or `null` is treated as `''`. `data` itself defaults to `{}` (and `null`
-  is treated as `{}`), so `validatePendaftaran()` returns all three error keys.
-  Values are normalised with `String(value ?? '').trim()` before checking.
-- Returns a **new plain object** containing only keys for invalid fields, each mapped to
-  its exact message from `ERROR_MESSAGES`. Valid input returns `{}` (so
-  `expect(result).toEqual({})` and `Object.keys(result).length === 0`).
-  The input object is never mutated. Never throws for the inputs described here.
-- Rules (on the trimmed value `v`):
-  - `nama`: invalid unless `3 <= v.length <= 80`.
-    Invalid: `""`, `"   "`, `"Al"`, `"  Al  "`, `'a'.repeat(81)`, `undefined`.
-    Valid: `"Ani"`, `"  Ani  "`, `'a'.repeat(80)`.
-  - `email`: invalid unless `/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)`.
-    Invalid: `""`, `"budi"`, `"budi@"`, `"budi@kampus"`, `"@kampus.ac.id"`,
-    `"budi @kampus.ac.id"`, `"budi@@kampus.ac.id"`.
-    Valid: `"budi@kampus.ac.id"`, `"  budi@kampus.ac.id  "`.
-  - `nim`: invalid unless `/^[0-9]{10}$/.test(v)`.
-    Invalid: `""`, `"123456789"`, `"12345678901"`, `"12345abcde"`, `"12345 67890"`, `"-123456789"`.
-    Valid: `"2201234567"`, `" 2201234567 "`.
-  - `sesi`: never validated, never an error key (whatever its value).
-- Multiple invalid fields produce multiple keys in one result, e.g.
-  `validatePendaftaran({ nama: '', email: '', nim: '', sesi: 'Offline' })` returns
-  `{ nama: 'Nama wajib diisi (3–80 karakter).', email: 'Format email tidak valid.', nim: 'NIM harus 10 digit angka.' }`.
-
-### What `tests/validatePendaftaran.test.jsx` must check
-
-- `ERROR_MESSAGES` has exactly the three strings above (with en dash in `3–80`).
-- Every valid/invalid example above for each field, testing one field at a time with the
-  other fields valid (base valid data: `{ nama: 'Budi Santoso', email: 'budi@kampus.ac.id', nim: '2201234567', sesi: 'Offline' }`),
-  asserting the error key is present with the exact message, or absent.
-- Fully valid data (with `sesi` `'Offline'` and `'Online'`) returns `{}`.
-- All three empty gives exactly the three keys; `validatePendaftaran()` and
-  `validatePendaftaran({})` give the three keys; `sesi` is never a key (also for
-  `sesi: ''` / `sesi: 'X'`).
-- The input object is not mutated (e.g. untrimmed values stay untrimmed).
-- Tests import nothing from React / Testing Library.
-
-## Pendaftaran (changed)
-
-Files: `src/components/Pendaftaran.jsx`, `src/components/Pendaftaran.css`. Test:
-`tests/Pendaftaran.test.jsx` (**fully rewritten in this run**; the LP-1 assertions for
-the placeholder text and "no form controls" (AC-19/AC-20) are removed).
+Files: `src/components/Faq.jsx`, `src/components/Faq.css`. Test: `tests/Faq.test.jsx`.
 
 ```jsx
 import { useState } from 'react';
-import validatePendaftaran from './validatePendaftaran.js';
-import './Pendaftaran.css';
+import './Faq.css';
 
-export default function Pendaftaran({ onSubmit } = {})
+export const FAQ_ITEMS = [
+  { question: 'Apakah workshop ini gratis?', answer: 'Ya, gratis untuk mahasiswa dan dosen.' },
+  { question: 'Perlu membawa laptop?', answer: 'Ya, untuk sesi hands-on.' },
+  { question: 'Apakah ada sertifikat?', answer: 'Ya, sertifikat elektronik dikirim lewat email.' },
+  { question: 'Bagaimana jika berhalangan hadir?', answer: 'Rekaman sesi akan dibagikan ke peserta terdaftar.' },
+];
+
+export default function Faq({ items } = {})
 ```
+
+Test import: `import Faq, { FAQ_ITEMS } from '../src/components/Faq.jsx';`
 
 ### Props
 
 | Prop | Type | Default | Meaning |
 |---|---|---|---|
-| `onSubmit` | `(data: { nama: string, email: string, nim: string, sesi: 'Offline' \| 'Online' }) => void` | `undefined` | Called exactly once after a valid submit. If not a function, it is ignored (no error). |
+| `items` | `Array<{ question: string, answer: string }>` | `undefined` -> `FAQ_ITEMS` | If `items` is an array it replaces the defaults entirely and is rendered in the given order (an empty array renders the heading and no questions). If `undefined` or not an array, `FAQ_ITEMS` is used. |
 
-### State
+### State and behaviour
 
-- `values`: `{ nama: '', email: '', nim: '', sesi: 'Offline' }` initially (raw, untrimmed input).
-- `errors`: `{}` initially; replaced **only** on submit with the result of `validatePendaftaran(values)`.
-- `submittedNama`: `null` initially; set to the trimmed name on a valid submit.
+- `openIndex`: `number | null`, initially `null` (all collapsed).
+- Clicking question `i`: `setOpenIndex((prev) => (prev === i ? null : i))`.
+  So: clicking a closed question opens it and closes any other; clicking the open one
+  closes it. At most one is open at any time.
+- Buttons are `type="button"`; no `href`, no form, no hash change, no `preventDefault` needed.
+- No animation; closed panels use only the `hidden` attribute.
 
-### Behaviour
+### Markup
 
-- `onChange` of each control updates only `values` (never `errors`): typing neither
-  shows nor clears messages.
-- Form `onSubmit` handler:
-  1. `event.preventDefault()` (always, first).
-  2. `const errs = validatePendaftaran(values); setErrors(errs);`
-  3. If `Object.keys(errs).length > 0`: stop. Form stays, values are kept, `onSubmit` not called.
-  4. Else build `data = { nama: values.nama.trim(), email: values.email.trim(), nim: values.nim.trim(), sesi: values.sesi }`,
-     set `submittedNama = data.nama`, and if `typeof onSubmit === 'function'` call
-     `onSubmit(data)` directly in the event handler (**not** inside a state updater
-     function, so React StrictMode cannot call it twice).
-- After success the form is not rendered anymore; there is no reset/"register again".
-- No `fetch`, no `localStorage`, no network.
-
-### Markup - form state (`submittedNama === null`)
+For each item at index `i` (0-based), with `open = openIndex === i`:
 
 ```jsx
-<section id="daftar" className="pendaftaran">
-  <h2 className="pendaftaran-heading">Pendaftaran</h2>
-  <form className="pendaftaran-form" aria-label="Formulir pendaftaran" noValidate onSubmit={handleSubmit}>
-    <div className="pendaftaran-field">
-      <label className="pendaftaran-label" htmlFor="pendaftaran-nama">Nama lengkap</label>
-      <input
-        id="pendaftaran-nama" name="nama" type="text" className="pendaftaran-input"
-        autoComplete="name" value={values.nama} onChange={...}
-        aria-invalid={errors.nama ? 'true' : undefined}
-        aria-describedby={errors.nama ? 'pendaftaran-nama-error' : undefined}
-      />
-      {errors.nama && <p id="pendaftaran-nama-error" className="pendaftaran-error">{errors.nama}</p>}
-    </div>
-
-    <div className="pendaftaran-field">
-      <label className="pendaftaran-label" htmlFor="pendaftaran-email">Email</label>
-      <input
-        id="pendaftaran-email" name="email" type="email" className="pendaftaran-input"
-        autoComplete="email" value={values.email} onChange={...}
-        aria-invalid={errors.email ? 'true' : undefined}
-        aria-describedby={errors.email ? 'pendaftaran-email-error' : undefined}
-      />
-      {errors.email && <p id="pendaftaran-email-error" className="pendaftaran-error">{errors.email}</p>}
-    </div>
-
-    <div className="pendaftaran-field">
-      <label className="pendaftaran-label" htmlFor="pendaftaran-nim">NIM</label>
-      <input
-        id="pendaftaran-nim" name="nim" type="text" inputMode="numeric" className="pendaftaran-input"
-        value={values.nim} onChange={...}
-        aria-invalid={errors.nim ? 'true' : undefined}
-        aria-describedby={errors.nim ? 'pendaftaran-nim-error' : undefined}
-      />
-      {errors.nim && <p id="pendaftaran-nim-error" className="pendaftaran-error">{errors.nim}</p>}
-    </div>
-
-    <fieldset className="pendaftaran-fieldset">
-      <legend className="pendaftaran-legend">Sesi</legend>
-      <div className="pendaftaran-radio">
-        <input id="pendaftaran-sesi-offline" type="radio" name="sesi" value="Offline"
-               checked={values.sesi === 'Offline'} onChange={...} />
-        <label htmlFor="pendaftaran-sesi-offline">Offline</label>
-      </div>
-      <div className="pendaftaran-radio">
-        <input id="pendaftaran-sesi-online" type="radio" name="sesi" value="Online"
-               checked={values.sesi === 'Online'} onChange={...} />
-        <label htmlFor="pendaftaran-sesi-online">Online</label>
-      </div>
-    </fieldset>
-
-    <button type="submit" className="pendaftaran-submit">Kirim Pendaftaran</button>
-  </form>
+<section id="faq" className="faq">
+  <h2 className="faq-heading">Pertanyaan Umum</h2>
+  <div className="faq-list">
+    {list.map((item, i) => {
+      const open = openIndex === i;
+      return (
+        <div key={i} className="faq-item">
+          <h3 className="faq-question-heading">
+            <button
+              type="button"
+              id={`faq-question-${i}`}
+              className="faq-question"
+              aria-expanded={open ? 'true' : 'false'}
+              aria-controls={`faq-panel-${i}`}
+              onClick={() => toggle(i)}
+            >
+              <span className="faq-question-text">{item.question}</span>
+              <span className="faq-icon" aria-hidden="true"></span>
+            </button>
+          </h3>
+          <div id={`faq-panel-${i}`} className="faq-panel" hidden={!open}>
+            <p className="faq-answer">{item.answer}</p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
 </section>
 ```
 
 Exact rules:
-- Ids, `name`s, `type`s and texts exactly as above. Inputs have **no** `required`,
-  `pattern`, `minLength` or `maxLength` attributes (so 11-digit NIM / 81-char names
-  can be typed and validated by the app). The form has the `novalidate` attribute
-  (`noValidate` in JSX).
-- Valid inputs have **no** `aria-invalid` attribute at all and no `aria-describedby`.
-- The error `<p>` is rendered directly after its input, inside the same
-  `.pendaftaran-field` div; its entire text is the exact message. Its id is
-  `pendaftaran-<field>-error`.
-- The form has role `form` with name `Formulir pendaftaran`.
-- No headings other than the `h2`, no links, exactly one `button`.
-- The text `Pendaftaran dibuka 1 November 2026.` is **not rendered** anywhere.
-- No `role="status"` element exists in the form state.
+- `<section id="faq">` without `aria-label` / `aria-labelledby`; exactly one `h2`
+  with text `Pertanyaan Umum`; exactly one `h3` per item and no other headings.
+- Each `h3` contains only its `button`; the button's text content (and therefore the
+  `h3`'s text content and both accessible names) is **exactly** the question. The
+  `.faq-icon` span is **empty** (no text, no `+`/`-` characters) and has
+  `aria-hidden="true"`; the open/closed indicator is drawn purely in CSS
+  (`.faq-question[aria-expanded="true"] .faq-icon::before` etc.).
+- `getByRole('button', { name: q })` and `getByRole('heading', { level: 3, name: q })`
+  both work; `getByText(q)` matches the `.faq-question-text` span.
+- `aria-expanded` is always present as the string `"true"` or `"false"`.
+- Panel ids: `faq-panel-0`, `faq-panel-1`, ...; button ids `faq-question-0`, ...
+  `aria-controls` of button `i` is exactly `faq-panel-i`. (Only one `Faq` is rendered per
+  page, so ids are unique.) Panels have no `role` attribute.
+- Closed panel: the `<div>` has the `hidden` attribute (and the answer `<p>` inside it
+  is therefore `not.toBeVisible()`). Open panel: no `hidden` attribute at all (React
+  omits it for `hidden={false}`), answer `toBeVisible()`. All panels are always in the
+  DOM (never unmounted).
+- `getByText(answer)` matches the `<p className="faq-answer">` whose entire text is the
+  answer. No links and no other buttons in the section.
 
-### Markup - success state (`submittedNama !== null`)
+### Style (`Faq.css`)
 
-```jsx
-<section id="daftar" className="pendaftaran">
-  <h2 className="pendaftaran-heading">Pendaftaran</h2>
-  <p className="pendaftaran-success" role="status">
-    {`Terima kasih, ${submittedNama}! Pendaftaranmu sudah kami terima.`}
-  </p>
-</section>
-```
+Section padded like Agenda, content constrained by `--content-max-width`. Each
+`.faq-item` is a `#FFFFFF` card with `border-radius: var(--radius)` and a subtle border.
+`.faq-question-heading` has `margin: 0` and inherits a normal font size. `.faq-question`:
+`display: flex; justify-content: space-between; align-items: center; width: 100%;`
+`background: none; border: 0; padding; text-align: left; font: inherit; color: var(--color-text);`
+`cursor: pointer;` with a visible `:focus-visible` outline in `--color-primary`.
+`.faq-question-text` may wrap (`min-width: 0`, `overflow-wrap: anywhere`).
+`.faq-icon::before { content: "+"; color: var(--color-primary); }` and
+`.faq-question[aria-expanded="true"] .faq-icon::before { content: "\2212"; }`.
+No fixed widths above 360px.
 
-- The `<form>`, all inputs, the fieldset and the button are removed (not just hidden).
-- Message example: name typed `"  Budi Santoso "` -> `Terima kasih, Budi Santoso! Pendaftaranmu sudah kami terima.`
+### What `tests/Faq.test.jsx` must check
 
-### Style (`Pendaftaran.css`)
+Use `render`, `screen`, `within`, `fireEvent` from `@testing-library/react`.
+`const panelOf = (btn) => document.getElementById(btn.getAttribute('aria-controls'))`.
 
-Card with `#FFFFFF` background, `border-radius: var(--radius)`; fields stacked, inputs
-`width: 100%`, `max-width: 100%`, rounded `var(--radius)`, font `inherit`; submit button
-background `var(--color-primary)`, white text, `border-radius: var(--radius)`, no fixed
-widths above 360px; `.pendaftaran-error` colour `#B91C1C`, small font; invalid inputs
-(`[aria-invalid="true"]`) get a `#B91C1C` border; fieldset without default heavy border
-is fine. `.pendaftaran-success` styled as a highlighted box (e.g. border-left in
-`--color-primary`).
+1. Structure (LP3-AC-3/5): `container.querySelector('section#faq')` exists;
+   `getByRole('heading', { level: 2, name: 'Pertanyaan Umum' })`; exactly four
+   level-3 headings, each found by `{ level: 3, name: <question> }`, and each containing
+   the corresponding button; no h1, h4-h6; exactly 1 h2.
+2. Questions (LP3-AC-4): `getAllByRole('button')` has length 4, text contents in the
+   exact order above, each `type="button"`; each findable by `{ name: <question> }`.
+   The `.faq-icon` / `[aria-hidden="true"]` element inside each button has empty text.
+3. `FAQ_ITEMS` equals the four exact question/answer pairs (LP3-AC-6).
+4. Initial state (LP3-AC-7/8): all buttons `aria-expanded="false"`; each
+   `aria-controls` points to an existing element whose id is unique, that contains
+   exactly its paired answer, and that has the `hidden` attribute; every answer
+   `getByText(answer)` is in the document and `not.toBeVisible()`.
+5. Open (LP3-AC-9): click `Apakah workshop ini gratis?` -> its `aria-expanded="true"`,
+   panel has no `hidden` attribute, `Ya, gratis untuk mahasiswa dan dosen.` `toBeVisible()`;
+   the other three answers not visible, other buttons `"false"`.
+6. Switch (LP3-AC-10): then click `Apakah ada sertifikat?` -> only
+   `Ya, sertifikat elektronik dikirim lewat email.` visible, only the third button
+   `"true"`, first button back to `"false"` and its panel `hidden` again.
+7. Close (LP3-AC-11): click the open question again -> all four `"false"`, all answers
+   not visible.
+8. Invariant (LP3-AC-12): after a click sequence (e.g. 1, 2, 2, 4, 3), after every click
+   the count of `[aria-expanded="true"]` buttons is 0 or 1 and the only visible answer
+   belongs to that button.
+9. No navigation (LP3-AC-13): `window.location.hash` is unchanged after clicks and all
+   buttons are `type="button"`.
+10. Custom items (LP3-AC-14): `render(<Faq items={[{ question: 'Q1?', answer: 'A1.' }, { question: 'Q2?', answer: 'A2.' }]} />)`
+    -> exactly two buttons `Q1?`, `Q2?` in order, none of the default questions present,
+    both answers hidden; click `Q2?` shows `A2.`; click `Q1?` shows `A1.` and hides `A2.`;
+    click `Q1?` again hides both.
 
-### What the rewritten `tests/Pendaftaran.test.jsx` must check
+## validatePendaftaran (unchanged)
 
-Use `render`, `screen`, `within`, `fireEvent`, `createEvent` from `@testing-library/react`
-and `vi.fn()` for callbacks. Fill fields with
-`fireEvent.change(input, { target: { value: '...' } })`, choose a session with
-`fireEvent.click(screen.getByRole('radio', { name: 'Online' }))`, submit with
-`fireEvent.click(screen.getByRole('button', { name: 'Kirim Pendaftaran' }))`.
+File: `src/components/validatePendaftaran.js` (pure, no React, no DOM). Test:
+`tests/validatePendaftaran.test.jsx`. Exports `ERROR_MESSAGES`
+(`nama`: `Nama wajib diisi (3–80 karakter).`, `email`: `Format email tidak valid.`,
+`nim`: `NIM harus 10 digit angka.`) and `validatePendaftaran(data = {})` (default and
+named export) returning an object with keys only for invalid fields. No change in LP-3.
 
-1. Structure: `container.querySelector('section#daftar')` exists; one
-   `getByRole('heading', { level: 2, name: 'Pendaftaran' })`; no `h1`/`h3`-`h6`;
-   `queryByText('Pendaftaran dibuka 1 November 2026.')` is null (LP2-AC-1).
-2. Initial state (LP2-AC-8/9/10): `getByRole('form', { name: 'Formulir pendaftaran' })`
-   exists and has attribute `novalidate`; `getByLabelText('Nama lengkap')` (type
-   `text`), `getByLabelText('Email')` (type `email`), `getByLabelText('NIM')` (type
-   `text`) all have value `''`; `getByRole('group', { name: 'Sesi' })` contains
-   `radio` `Offline` (checked) and `radio` `Online` (not checked);
-   `getByRole('button', { name: 'Kirim Pendaftaran' })` has `type="submit"`; none of
-   the three error messages is in the document; no input has `aria-invalid`;
-   `queryByRole('status')` is null. The heading precedes the form in DOM order.
-3. Typing invalid data without submitting shows no error messages (LP2-AC-11).
-4. Submit empty form: all three messages shown, each input has
-   `aria-invalid="true"` and `toHaveAccessibleDescription(<its message>)`; each
-   message element is the next element sibling of its input; `onSubmit` mock not
-   called; form still present (LP2-AC-12/13).
-5. Submit with only one field invalid (e.g. NIM `'123'`): only `NIM harus 10 digit angka.`
-   shown; Nama/Email inputs have no `aria-invalid` attribute; entered values kept.
-6. Error clearing (LP2-AC-14): submit empty, then fix Nama only and submit again ->
-   Nama message gone (and `aria-invalid` removed), Email and NIM messages remain. Also:
-   after errors are shown, changing a field without submitting does not remove its
-   message.
-7. Default prevented (LP2-AC-15): `const ev = createEvent.submit(form); fireEvent(form, ev);`
-   then `expect(ev.defaultPrevented).toBe(true)` (both for invalid and valid data).
-8. Success (LP2-AC-16/17/18): name `'  Budi Santoso '`, email `'budi@kampus.ac.id'`,
-   NIM `'2201234567'`, click `Online`, submit -> `getByRole('status')` has text
-   `Terima kasih, Budi Santoso! Pendaftaranmu sudah kami terima.`; `queryByRole('form')`
-   / `container.querySelector('form')` null; no `textbox`, `radio` or `button` roles
-   left; heading `Pendaftaran` still present inside `section#daftar`; `onSubmit`
-   called exactly once with
-   `{ nama: 'Budi Santoso', email: 'budi@kampus.ac.id', nim: '2201234567', sesi: 'Online' }`.
-   A second case with default session sends `sesi: 'Offline'` and trims email/NIM with
-   surrounding spaces.
-9. No `onSubmit` (LP2-AC-19): `render(<Pendaftaran />)`, valid submit does not throw and
-   shows the thank-you message.
+## Pendaftaran (unchanged)
+
+Files: `src/components/Pendaftaran.jsx`, `src/components/Pendaftaran.css`. Test:
+`tests/Pendaftaran.test.jsx`. `export default function Pendaftaran({ onSubmit } = {})`.
+Renders `<section id="daftar">` with `h2` `Pendaftaran` and the LP-2 form
+(`form` named `Formulir pendaftaran`, `noValidate`, inputs `Nama lengkap` / `Email` /
+`NIM`, fieldset `Sesi` with radios `Offline` (default) / `Online`, button
+`Kirim Pendaftaran`) or, after a valid submit, the `role="status"` message
+`Terima kasih, <nama>! Pendaftaranmu sudah kami terima.` No headings other than the
+h2, no links. No change in LP-3; all LP-2 criteria still hold.
 
 ## Footer (unchanged)
 
 Files: `src/components/Footer.jsx`, `src/components/Footer.css`. Test: `tests/Footer.test.jsx`.
-
-```jsx
-export default function Footer()   // no props
-```
 
 ```jsx
 <footer className="footer">
@@ -447,17 +350,16 @@ export default function Footer()   // no props
 </footer>
 ```
 
-- Root `<footer>` (role `contentinfo`); text exactly `© 2026 ParaLab · Program Studi Informatika`;
-  exactly one link `paralab@kampus.ac.id` -> `mailto:paralab@kampus.ac.id`; no headings.
+## App (changed)
 
-## App (unchanged)
-
-Files: `src/components/App.jsx`, `src/components/App.css`. Test: `tests/App.test.jsx`.
+Files: `src/components/App.jsx`, `src/components/App.css`. Test: `tests/App.test.jsx`
+(**updated in this run**).
 
 ```jsx
 import Navbar from './Navbar.jsx';
 import Hero from './Hero.jsx';
 import Agenda from './Agenda.jsx';
+import Faq from './Faq.jsx';
 import Pendaftaran from './Pendaftaran.jsx';
 import Footer from './Footer.jsx';
 import './App.css';
@@ -469,6 +371,7 @@ export default function App() {   // no props
       <main className="app-main">
         <Hero />
         <Agenda />
+        <Faq />
         <Pendaftaran />
       </main>
       <Footer />
@@ -477,11 +380,25 @@ export default function App() {   // no props
 }
 ```
 
-- No code change in LP-2: `<Pendaftaran />` is rendered without `onSubmit`.
-- The existing `tests/App.test.jsx` remains valid after LP-2 and needs **no update**:
-  the new form adds no `section`, `nav` or `footer` elements, no headings (so one h1,
-  h2s `Agenda`, `Pendaftaran`, no h3-h6 still hold - LP2-AC-20), and no links (the
-  in-page link checks are unaffected). It never asserted the superseded placeholder
-  text. The Pendaftaran coder must keep it that way (no extra headings, sections or
-  links inside `#daftar`).
-- AC-1 (page title) stays tested in `tests/App.test.jsx` by reading `index.html` as text.
+- The only code change: import `Faq` and render `<Faq />` (no props) between
+  `<Agenda />` and `<Pendaftaran />`. `App.css` unchanged.
+- `<Pendaftaran />` is still rendered without `onSubmit`.
+
+### What the updated `tests/App.test.jsx` must check
+
+Keep the AC-1 title test and the landmark test (navigation `Navigasi utama`, `main`,
+`contentinfo` each exactly once). Update:
+
+1. Page order (LP3-AC-1): `container.querySelectorAll('nav, section, footer')` maps to
+   `['nav', 'section#tentang', 'section#agenda', 'section#faq', 'section#daftar', 'footer']`;
+   `main` contains `section#tentang`, `#agenda`, `#faq`, `#daftar` and no `nav`/`footer`.
+2. Headings (LP3-AC-1): exactly one h1 (`Workshop Komputasi Paralel 2026`); h2 texts in
+   order `['Agenda', 'Pertanyaan Umum', 'Pendaftaran']`; exactly four h3s, all inside
+   `section#faq`; no h4-h6. No skipped levels: walking all `h1`-`h6` in DOM order,
+   each heading's level is at most previous level + 1 (first is h1).
+3. Links: every link whose `href` starts with `#` points to an existing element id
+   (now at least 5: four nav links + `Daftar Sekarang`); the nav contains exactly 4
+   links; `getByRole('link', { name: 'FAQ' })` has `href="#faq"` and
+   `section#faq` exists; `Daftar Sekarang` -> `#daftar`.
+4. The FAQ is collapsed on page load: within `section#faq` all 4 buttons have
+   `aria-expanded="false"`.

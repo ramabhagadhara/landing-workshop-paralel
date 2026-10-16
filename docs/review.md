@@ -1,61 +1,58 @@
-# Review - LP-2 Form pendaftaran dengan validasi (incremental on LP-1)
+# Review - LP-3 FAQ accordion (incremental on LP-1/LP-2), round 1
 
 **Verdict: approve**
 
-Scope reviewed: `validatePendaftaran` (new) and `Pendaftaran` (changed). I also re-read the unchanged modules (Navbar, Hero, Agenda, Footer, App) to check for regressions.
+Scope reviewed: `Faq` (new), `Navbar` (changed), `App` (changed). I compared them with `docs/design.md` (Faq, Navbar, App sections), LP3-AC-1 to LP3-AC-16 in `docs/requirements.md`, the amended LP-1 criteria (AC-2, AC-3, AC-6), LP2-AC-20 and the stack conventions. Unchanged modules were covered by their existing tests, which still pass.
 
 ## Build
 
-`npm run build` (vite 5.4.21) passed: 43 modules transformed, `dist/index.html` 0.43 kB, CSS 4.43 kB, JS 148.23 kB. Exit code 0.
+`npm run build` (vite 5.4.21) passed. 45 modules were transformed. Output sizes: `dist/index.html` 0.43 kB, CSS 5.46 kB, JS 149.55 kB. Exit code 0.
 
 ## Tests
 
-`npm test` (vitest 2.1.9) passed: **7 files, 37 tests, 0 failures**. Exit code 0.
+`npm test` (vitest 2.1.9) passed: **8 files, 44 tests, 0 failures**. Exit code 0.
 
 | Test file | Tests | Result |
 |---|---|---|
+| tests/Faq.test.jsx | 6 | pass (new) |
+| tests/Navbar.test.jsx | 5 | pass (updated to 4 links) |
+| tests/App.test.jsx | 6 | pass (updated page order and heading order) |
+| tests/Pendaftaran.test.jsx | 6 | pass (no LP-2 regression) |
 | tests/validatePendaftaran.test.jsx | 6 | pass |
-| tests/Pendaftaran.test.jsx | 6 | pass |
-| tests/Navbar.test.jsx | 5 | pass |
 | tests/Hero.test.jsx | 5 | pass |
 | tests/Agenda.test.jsx | 6 | pass |
 | tests/Footer.test.jsx | 4 | pass |
-| tests/App.test.jsx | 5 | pass (unchanged, no LP-1 regression) |
 
 ## Design and requirements check
 
-### validatePendaftaran (`src/components/validatePendaftaran.js`)
-- Plain `.js`. It has no React import and no DOM access. It exports `ERROR_MESSAGES`, a named `validatePendaftaran` and a default export, and both exports are the same function. All of this matches the design.
-- All three messages are exact, including the en dash U+2013 in `3–80`.
-- `data = {}` defaults, and `data ?? {}` handles `null`. Each field is normalised with `String(value ?? '').trim()`. It returns a new object holding only the invalid keys, and never adds a `sesi` key. The input is not mutated.
-- The rules match the spec: nama length 3..80, the email regex `^[^\s@]+@[^\s@]+\.[^\s@]+$`, and the NIM regex `^[0-9]{10}$`. This covers LP2-AC-2..7.
-- Tests cover every documented example, the default-argument and `{}` cases, `sesi` never being a key, and no mutation. They import nothing from React or Testing Library.
+### Faq (`src/components/Faq.jsx`, `src/components/Faq.css`)
+- The default export `Faq({ items } = {})` and the named export `FAQ_ITEMS` match the design. The four question/answer pairs are exact, including the question marks and the trailing full stops (LP3-AC-4, LP3-AC-6).
+- `items` replaces the defaults only when it is an array. Otherwise `FAQ_ITEMS` is used, as the design specifies (LP3-AC-14).
+- The component renders `section#faq` with one h2 `Pertanyaan Umum`. Each question sits in its own `h3` that wraps a `type="button"` button, and the section has no other headings (LP3-AC-3, LP3-AC-5, LP3-AC-13).
+- State is a single `openIndex` (null or index). The toggle `prev === i ? null : i` keeps at most one panel open and closes the open one on a second click (LP3-AC-9 to LP3-AC-12).
+- `aria-expanded` is always set to the string `"true"` or `"false"`. Button `i` has `aria-controls="faq-panel-i"`, and that panel has the matching unique id (LP3-AC-7, LP3-AC-8).
+- Panels are always in the DOM. A closed panel carries `hidden`; an open panel has no `hidden` attribute (LP3-AC-7, LP3-AC-9). `.faq-panel[hidden] { display: none; }` keeps the attribute working even though the panel has its own padding rule.
+- The indicator span is empty and has `aria-hidden="true"`. The +/- is drawn in CSS with `::before`, so it is not part of the accessible name (LP3-AC-15).
+- Styling: the CSS uses `--color-primary`, `--color-text`, `--radius` (12px) and `--content-max-width`. The only literal colour is the `#FFFFFF` card background, which the design allows. Class names all use the `faq-` prefix. Buttons are `width: 100%` and show a visible `:focus-visible` outline. Question text can wrap (`min-width: 0; overflow-wrap: anywhere`). There are no fixed widths, so the section should fit at 360px (still a manual check).
+- No new dependencies are added and no `<details>` element is used.
 
-### Pendaftaran (`src/components/Pendaftaran.jsx`, `Pendaftaran.css`)
-- The signature `Pendaftaran({ onSubmit } = {})` and the three pieces of state (`values`, `errors`, `submittedNama`) match the design.
-- `onChange` updates only `values`. The submit handler calls `preventDefault()` first, then validates and sets errors, and stops if there are any. On success it builds trimmed data, sets `submittedNama`, and calls `onSubmit(data)` straight from the event handler (not inside a state updater), so StrictMode cannot call it twice. The `typeof` guard covers a missing prop. This covers LP2-AC-11..19.
-- The form markup matches the design exactly: ids, `name`s, `type`s, `autoComplete`, `inputMode="numeric"` on NIM, `noValidate`, and `aria-label="Formulir pendaftaran"`. There are no `required`, `pattern`, `minLength` or `maxLength` attributes. Each error `<p>` sits directly after its input with id `pendaftaran-<field>-error`.
-- In the success state the form is removed entirely and replaced by `<p role="status">` with the exact thank-you text. The `h2` stays inside `section#daftar`.
-- The placeholder text `Pendaftaran dibuka 1 November 2026.` no longer appears anywhere in `src` (LP2-AC-1).
-- No `fetch`, no `localStorage`, and no new dependencies (`package.json` is unchanged).
+### Navbar (`src/components/Navbar.jsx`, `src/components/Navbar.css`)
+- The navbar has four links in this order: Tentang `#tentang`, Agenda `#agenda`, FAQ `#faq`, Daftar `#daftar`. The `<nav aria-label="Navigasi utama">` landmark and the `ParaLab Workshop` logo are unchanged (LP3-AC-2, AC-4, AC-5).
+- `flex-wrap: wrap` is set on both the bar and the link list, so four links can wrap at 360px. The navbar has no headings.
 
-### Accessibility (form)
-- Every text input has a visible `<label htmlFor>`. The radios are grouped in a `fieldset` with `legend` "Sesi", and each radio has its own label.
-- Invalid inputs get `aria-invalid="true"` and an `aria-describedby` that points to the message. On valid inputs both attributes are left out entirely, not set to `"false"`.
-- The success message uses `role="status"`, so screen readers announce it.
-- Heading order is intact: the component's only heading is the h2, and App still has one h1 followed by the h2s Agenda and Pendaftaran (LP2-AC-20, checked by App.test.jsx). There are no links and exactly one button, so App's link checks are unaffected.
-- Inputs show a visible focus outline in `--color-primary`.
+### App (`src/components/App.jsx`, `src/components/App.css`)
+- Render order is Navbar, then `<main>` containing Hero, Agenda, Faq and Pendaftaran, then Footer. This matches LP3-AC-1 and the design tree. Navbar is still the first thing rendered (AC-7).
+- Headings: one h1, then h2s in the order Agenda, Pertanyaan Umum, Pendaftaran. The four h3s are all inside `#faq`, so no heading level is skipped.
+- `App.css` needed no change for LP-3. The `.app-main > section` rules apply to the new section automatically.
 
-### Styles / tokens
-- All class names start with `pendaftaran-`. The CSS uses `var(--radius)`, `var(--color-primary)`, `var(--color-text)` and `var(--color-bg)`. `#FFFFFF` and `#B91C1C` are used only where the design allows them. Inputs use `width: 100%`, `max-width: 100%` and `font: inherit`. There are no fixed widths above 360px (the card is `max-width: 40rem; width: 100%`), and the fieldset wraps. This covers LP2-AC-21.
-
-### Unchanged modules
-- Navbar, Hero, Agenda, Footer and App still match the design, character for character. `index.html` keeps its title and `lang="id"`, and `src/index.css` keeps the tokens.
+### Accessibility
+- The accordion uses native buttons (Enter, Space and Tab work), `aria-expanded` and `aria-controls`, and headings that wrap the buttons, following the WAI-ARIA accordion pattern. The decorative icon is hidden from assistive technology. Heading order is valid across the page.
+- The changed modules have no images, so alt text does not apply.
 
 ## Issues
 
-None of these block approval:
-1. (nit, Pendaftaran.css) The input border `rgba(17, 24, 39, 0.25)` and the card `box-shadow` `rgba(17, 24, 39, 0.08)` hard-code a translucent copy of `--color-text`. The design's rule is "use custom properties instead of hard-coded colours". These are low-alpha tints with no token equivalent, so they are acceptable. They could become a token in a later ticket.
-2. (nit, tests/Pendaftaran.test.jsx) Design item 7 asks for a `defaultPrevented` check on both invalid and valid data. Both cases are covered, but inside the empty-submit and success tests rather than in a test of their own. No change needed.
+There are no blocking issues. One optional cosmetic note:
 
-No wrong tests were found.
+1. (Optional, cosmetic) `.faq` has `padding: 3rem 1rem`, and it sits inside `.app-main`, which already has `padding: 0 1rem`. On narrow screens that gives about 2rem of horizontal inset per side. This follows the design note "Section padded like Agenda" and does not cause horizontal scroll. It is not a defect.
+
+All tests are correct for the requirements. None needs changing.

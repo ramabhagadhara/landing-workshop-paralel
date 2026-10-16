@@ -34,9 +34,10 @@
     {"name": "Navbar", "files": ["src/components/Navbar.jsx", "src/components/Navbar.css"], "test": "tests/Navbar.test.jsx", "depends_on": []},
     {"name": "Hero", "files": ["src/components/Hero.jsx", "src/components/Hero.css"], "test": "tests/Hero.test.jsx", "depends_on": []},
     {"name": "Agenda", "files": ["src/components/Agenda.jsx", "src/components/Agenda.css"], "test": "tests/Agenda.test.jsx", "depends_on": []},
+    {"name": "Faq", "files": ["src/components/Faq.jsx", "src/components/Faq.css"], "test": "tests/Faq.test.jsx", "depends_on": []},
     {"name": "validatePendaftaran", "files": ["src/components/validatePendaftaran.js"], "test": "tests/validatePendaftaran.test.jsx", "depends_on": []},
     {"name": "Pendaftaran", "files": ["src/components/Pendaftaran.jsx", "src/components/Pendaftaran.css"], "test": "tests/Pendaftaran.test.jsx", "depends_on": ["validatePendaftaran"]},
     {"name": "Footer", "files": ["src/components/Footer.jsx", "src/components/Footer.css"], "test": "tests/Footer.test.jsx", "depends_on": []},
-    {"name": "App", "files": ["src/components/App.jsx", "src/components/App.css"], "test": "tests/App.test.jsx", "depends_on": ["Navbar", "Hero", "Agenda", "Pendaftaran", "Footer"]}
+    {"name": "App", "files": ["src/components/App.jsx", "src/components/App.css"], "test": "tests/App.test.jsx", "depends_on": ["Navbar", "Hero", "Agenda", "Faq", "Pendaftaran", "Footer"]}
   ]
 }
